@@ -1,0 +1,66 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" 
+th:replace="~{base1 :: Layout(~{::style},~{::body})}">
+  <head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<script th:src="@{/js/table.js}" defer="defer"></script>
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+
+    <title>Cafe Management System</title>
+    <style type="text/css">
+    .main
+    {
+    margin-top: 5%;
+    margin-left: 5%;
+    height: 85%;
+    background-color: white;
+    margin: 20px;
+  width: 98%;
+    
+    }
+    .shadowed-div {
+    background-color:whitesmoke;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* horizontal offset, vertical offset, blur radius, spread radius, color */
+}
+
+.btn:hover {
+	background-color: red;
+}
+    </style>
+  </head>
+  <body>
+   <div class=" main">
+   <h4 class="border-secondary border-bottom" style="padding-bottom: 15px;margin: 2px;text-align: center;color: red;"><b>Reports</b></h4>
+             <div th:if="${res}"  class="shadowed-div" style="height: 70%;overflow: auto;margin-left: 15px;margin-right: 15px;margin-top: 15px;">    
+   <table class="table table-hover">
+  <thead class="thead-dark">
+    <tr>
+      <th scope="col">Bill ID</th>
+      <th scope="col">Customer Name</th>
+      <th scope="col">Grant Total</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr th:each="res : ${res}" >
+      <td th:text="${res.billid}"></td>
+      <td th:text="${res.custname}"></td>
+      <td th:text="${res.granttotal}"></td>
+</tr>
+  </tbody>
+</table>   
+   </div>
+   
+   
+   
+   </div>
+    <!-- Optional JavaScript -->
+    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.12.9/dist/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+  </body>
+</html>

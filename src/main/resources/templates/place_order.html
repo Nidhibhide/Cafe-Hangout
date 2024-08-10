@@ -1,0 +1,262 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" 
+th:replace="~{base1 :: Layout(~{::style},~{::body})}">
+  <head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<script th:src="@{/js/table.js}" defer="defer"></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+
+    <title>Cafe Management System</title>
+    <style type="text/css">
+    .shadowed-div {
+    
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* horizontal offset, vertical offset, blur radius, spread radius, color */
+}
+.product-list
+{
+overflow: auto;
+margin-left: 15px;
+margin-right: 10px;
+/*width: 15%;*/
+margin-top: 15px;
+background-color: white;
+border: 2px solid black;
+}
+.heading
+{
+padding-bottom: 15px;
+margin: 2px;
+text-align: center;
+color: red;
+}
+.category-list
+{
+margin-left: 15px;
+/*width: 15%;*/
+/*margin-top: 2%;*/
+
+}
+.product-form
+{
+/*margin-left: 30%;*/
+margin-top: 20px;
+border: 2px solid black; 
+margin-right: 20px;
+
+}
+.btn:hover
+{
+background-color: red;
+}
+    </style>
+  </head>
+  <body >
+   <h4 class="  heading"><b><u>Place Order</u></b></h4>  
+
+
+            <div class="row" >
+            <div class="col-3" style="height: 40%;" >
+            
+            <form  th:object="${bill}" th:action="@{/user/get_products}" method="post">
+            <div th:if="${cust_name}" class="form-group" style="margin-left: 15px;">
+   <label for="exampleInputPassword1">Customer Name:</label>
+    <input type="text" class="form-control br"   name="custname" th:value="${cust_name}"  readonly>
+  </div>
+  
+ <div th:unless="${cust_name}" class="form-group" style="margin-left: 15px;">
+    <label for="exampleFormControlSelect1">Customer Name:</label>
+    <select class="form-control" id="exampleFormControlSelect1" name="custname">
+         <option th:each="customer : ${customers}" th:value="${customer.name}" th:text="${customer.name}"></option>
+    </select>
+  </div>
+  <div class="form-group" style="margin-left: 15px;">
+   <label for="exampleInputPassword1">Bill ID:</label>
+    <input type="text" class="form-control br"   name="billid" th:value="${newid}"  readonly>
+  </div>
+
+            <div class="category-list ">
+ <div class="form-group">
+    <label for="exampleFormControlSelect1">Category:</label>
+    <select class="form-control" id="exampleFormControlSelect1" name="category">
+      <option value="Cake">Cake</option>
+      <option value="Soft Drink">Soft Drink</option>
+      <option value="South Indian">South Indian</option>
+      <option value="Thali">Thali</option>
+    </select>
+  </div>
+  <input type="hidden" th:value="${session.selectedCategory}" name="selectedCategory" /> 
+  <button type="submit" class="btn btn-primary btn" style="margin-left: 35%;">Proceed</button>                      
+            </div>
+            
+             <div class="shadowed-div product-list" style="overflow: auto;">            
+   <table class="table table-hover"  id="productList">
+  <thead class="thead-dark">
+    <tr>
+      <th scope="col" >Product Name</th>
+       <th scope="col" >Product Price</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr th:each="pro : ${pro}" onclick="handleRowClick(this)">
+      <td th:text="${pro.productName}"></td>
+      <td th:text="${pro.price}"></td>
+</tr>
+  </tbody>
+</table> 
+   
+   </div>
+   </form>
+   </div>
+   
+   
+   
+   
+   
+  <div class="col-9" style="height: 40%;"  >
+  <div class="product-form shadowed-div" style="background-color: white;">
+<form  th:action="@{/user/bill}" method="post" th:object="${bill}" style="margin: 10px;margin-left: 30px;">
+   <div class=" row">
+  <div class="col-6 form-group">
+  <input type="hidden" th:value="${cust_name}" name="custname" /> 
+   <input type="hidden" th:value="${newid}" name="billid" /> 
+   <label for="exampleInputPassword1">Product Name:</label>
+    <input type="text" class="form-control br" id="product_name" placeholder="Enter Product Name" name="productname">
+  </div>
+  
+  <div class="col-6 form-group">
+   <label for="exampleInputPassword1">Product Price:</label>
+    <input type="text" class="form-control br" id="price" placeholder="Enter Product Price" name="price">
+  </div>
+   </div>
+   <div class=" row">
+  <div class="col-6 form-group">
+   <label for="exampleInputPassword1">Quantity:</label>
+    <input type="text" class="form-control br" id="quantity" placeholder="Enter Product Quantity" name="quantity" onchange="calculate()">
+  </div>
+  <div class="col-6 form-group">
+   <label for="exampleInputPassword1">Total:</label>
+    <input type="text" class="form-control br" id="total" placeholder="Total Amount" name="total">
+  </div>
+   </div>
+   <button type="submit" class="btn btn-primary btn" style="margin-left: 43%;">Add</button>
+   </form>
+   </div>
+   
+     <div style="margin-top: 15px;border: 2px solid black;margin-right: 20px;overflow: auto;height: 30%;"  class="shadowed-div">
+     
+<table class="table table-hover" id="additem">
+  <thead class="thead-dark">
+    <tr >
+      <th scope="col">Product Name</th>
+      <th scope="col">Price</th>
+      <th scope="col">Quantity</th>
+        <th scope="col">Total</th>
+    </tr>
+     <tr th:each="pro1 : ${pro1}">
+      <td scope="col" th:text="${pro1.productname}"></td>
+      <td scope="col" th:text="${pro1.price}"></td>
+      <td scope="col" th:text="${pro1.quantity}"></td>
+        <td scope="col" th:text="${pro1.total}"></td>
+    </tr>
+  </thead>
+  <tbody>
+  </tbody>
+</table> 
+   </div> 
+   </div>
+   </div>
+   <div class="row">
+   <div class="col-3" >
+    <h5 style="color: blue;margin-top: 10px;">Grant Total</h5>
+   <p style="font-size: 25px;color: red;"><b><span th:text="${total}">0.00</span></b></p>
+   <p th:unless="${total}" style="font-size: 25px;color: red;"><b><span >0.00</span></b></p>
+   
+   </div>
+   <div class="col-9">
+   <form th:action="@{/user/grantbill}" method="post" th:object="${grantbill}">
+   		<input type="hidden" th:value="${cust_name}" name="custname" /> 
+   		<input type="hidden" th:value="${newid}" name="billid" /> 
+   		<input type="hidden" th:value="${total}" name="granttotal" /> 
+       <button type="submit" class="btn btn-primary btn" style="margin-top: 20px;">Payment</button>
+       </form>
+   </div>
+   
+   
+   
+   
+   
+   
+   </div>
+   
+   
+ 
+    
+   
+  <script type="text/javascript">
+  
+function handleRowClick(row) {
+    var cells = row.getElementsByTagName("td");
+    var rowData = {
+        id: cells[0].innerText,
+        name: cells[1].innerText,
+    };
+
+    document.getElementById("product_name").value = cells[0].innerText;
+    document.getElementById("price").value = cells[1].innerText;
+}
+function calculate() {
+        var quantity = document.getElementById('quantity').value;
+        var price =document.getElementById('price').value; // Assuming price per item is $10
+        
+        var total = quantity * price;
+        document.getElementById('total').value = total.toFixed(2); // Display total with 2 decimal places
+    }
+    function add() {
+    var product=document.getElementById('product_name').value;
+    var price=document.getElementById('price').value;
+    var quantity=document.getElementById('quantity').value;
+    var total=document.getElementById('total').value;
+    
+     var tableBody = document.getElementById('additem').getElementsByTagName('tbody')[0];
+        var newRow = tableBody.insertRow();
+        
+        var cell1 = newRow.insertCell(0);
+        cell1.innerHTML = product;
+        
+        var cell2 = newRow.insertCell(1);
+        cell2.innerHTML = price;
+        
+        var cell3 = newRow.insertCell(2);
+        cell3.innerHTML = quantity;
+        
+        var cell4 = newRow.insertCell(3);
+        cell4.innerHTML = total;
+   
+
+}
+
+
+
+
+
+
+</script>
+  
+    
+    
+    
+   
+
+
+    <!-- Optional JavaScript -->
+    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.12.9/dist/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+  </body>
+</html>
